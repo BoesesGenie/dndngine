@@ -19,14 +19,14 @@ class EventEmitter {
     return this;
   }
 
-  emit(eventName) {
+  emit(eventName, ...args) {
     if (!this.#events.has(eventName) ) {
       return this;
     }
 
     this.#events.get(eventName).forEach((cb) => {
       try {
-        cb();
+        cb(...args);
       } catch (err) {
         console.error(err);
       }

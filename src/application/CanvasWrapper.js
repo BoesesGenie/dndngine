@@ -1,5 +1,5 @@
 import { eventEmitter } from './EventEmitter.js';
-import { WINDOW_RESIZE } from './events.js';
+import { SCALE, WINDOW_RESIZE } from './events.js';
 
 export class CanvasWrapper {
   #canvas = document.createElement('canvas');
@@ -14,6 +14,7 @@ export class CanvasWrapper {
     this.#canvas.height = window.innerHeight;
 
     window.addEventListener('resize', this.#handleWindowResize.bind(this));
+    this.#canvas.addEventListener('wheel', this.#handleScale.bind(this));
 
     this.#rootNode.appendChild(this.#canvas);
   }
@@ -35,5 +36,15 @@ export class CanvasWrapper {
     this.#canvas.height = window.innerHeight;
 
     eventEmitter.emit(WINDOW_RESIZE);
+  }
+
+  #handleScale(e) {
+    if (!e.ctrlKey) {
+      return;
+    }
+
+    e.preventDefault();
+
+    eventEmitter.emit(SCALE, e.deltaY);
   }
 }
