@@ -14,8 +14,8 @@ export class MapView {
   }
 
   draw(encounterMap, { scaleDelta, x, y }) {
-    this.#scaleCenterY = y || this.#scaleCenterY;
-    this.#scaleCenterX = x || this.#scaleCenterX;
+    this.#scaleCenterY = this.#scaleCenterY ? this.#scale === 1 ? 0 : this.#scaleCenterY : y;
+    this.#scaleCenterX = this.#scaleCenterX ? this.#scale === 1 ? 0 : this.#scaleCenterX : x;
     const ctx = this.#canvas.context;
     const lineWidth = Math.min(this.#canvas.width, this.#canvas.height) / LINE_WIDTH_DIVIDER;
     this.#scale += scaleDelta * -0.01;
