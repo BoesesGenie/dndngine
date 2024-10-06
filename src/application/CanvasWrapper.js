@@ -45,6 +45,10 @@ export class CanvasWrapper {
 
     e.preventDefault();
 
-    eventEmitter.emit(SCALE, e.deltaY);
+    eventEmitter.emit(SCALE, {
+      scaleDelta: e.deltaY,
+      x: e.clientX,
+      y: e.clientY,
+    });
   }
 }

@@ -18,10 +18,10 @@ export class Encounter {
     eventEmitter.on(SCALE, this.#draw.bind(this));
   }
 
-  #draw(scaleDelta = 0) {
+  #draw(settings = { scaleDelta: 0, x: 0, y: 0 }) {
     this.#canvas.context.fillStyle = 'black';
     this.#canvas.context.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
 
-    this.#mapView.draw(new EncounterMap(20, 20).drawDto, scaleDelta);
+    this.#mapView.draw(new EncounterMap(120, 120).drawDto, settings);
   }
 }

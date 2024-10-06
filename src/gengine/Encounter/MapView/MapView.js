@@ -11,7 +11,7 @@ export class MapView {
     this.#canvas = canvas;
   }
 
-  draw(encounterMap, scaleDelta) {
+  draw(encounterMap, { scaleDelta, x, y }) {
     const ctx = this.#canvas.context;
     const lineWidth = Math.min(this.#canvas.width, this.#canvas.height) / LINE_WIDTH_DIVIDER;
     this.#scale += scaleDelta * -0.01;
@@ -35,14 +35,17 @@ export class MapView {
     ctx.lineWidth = lineWidth;
     ctx.strokeStyle = LINE_COLOR;
 
+    const xStart = (this.#canvas.width - width) / 2 + horizontalPadding;
+    const yStart = (this.#canvas.height - height) / 2 + verticalPadding;
+
     for (let i = 0; i <= encounterMap.width; i++) {
       const start = {
-        x: i * cellSize + horizontalPadding,
-        y: verticalPadding,
+        x: i * cellSize + xStart,
+        y: yStart,
       };
       const end = {
-        x: i * cellSize + horizontalPadding,
-        y: verticalLineLength + verticalPadding,
+        x: i * cellSize + xStart,
+        y: verticalLineLength + yStart,
       };
 
       this.#drawLine(start, end);
@@ -50,12 +53,12 @@ export class MapView {
 
     for (let i = 0; i <= encounterMap.height; i++) {
       const start = {
-        x: horizontalPadding,
-        y: i * cellSize + verticalPadding,
+        x: xStart,
+        y: i * cellSize + yStart,
       };
       const end = {
-        x: horizontalLineLength + horizontalPadding,
-        y: i * cellSize + verticalPadding,
+        x: horizontalLineLength + xStart,
+        y: i * cellSize + yStart,
       };
 
       this.#drawLine(start, end);
