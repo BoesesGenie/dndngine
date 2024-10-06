@@ -2,7 +2,7 @@ import { CanvasWrapper } from './CanvasWrapper.js';
 import { UiWrapper } from './UiWrapper.js';
 import { registerComponents } from '../uiengine/registerComponents.js';
 import { eventEmitter } from './EventEmitter.js';
-import {ENCOUNTER_MODE_STARTED, STORY_MODE_STARTED} from './events.js';
+import { ENCOUNTER_MODE_STARTED, STORY_MODE_STARTED } from './events.js';
 import { Story } from '../gengine/Story/Story.js';
 import { Encounter } from '../gengine/Encounter/Encounter.js';
 import { MapView } from '../gengine/Encounter/MapView/MapView.js';
