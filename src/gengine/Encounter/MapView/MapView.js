@@ -1,5 +1,6 @@
-const LINE_WIDTH_DIVIDER = 500;
+const LINE_WIDTH_DIVIDER = 800;
 const LINE_COLOR = '#FFF';
+const PADDING = 0.05;
 
 export class MapView {
   #canvas;
@@ -10,37 +11,42 @@ export class MapView {
 
   draw(encounterMap) {
     const ctx = this.#canvas.context;
-    const base = Math.min(this.#canvas.width, this.#canvas.height);
-    const lineWidth = base / LINE_WIDTH_DIVIDER;
-    const maxSideSize = Math.max(encounterMap.width, encounterMap.height);
-    const cellSize = base / maxSideSize;
+    const lineWidth = Math.min(this.#canvas.width, this.#canvas.height) / LINE_WIDTH_DIVIDER;
+    const padding = PADDING * this.#canvas.width;
+    const paddingX2 = padding * 2;
+    const cellSize = Math.min(
+      (this.#canvas.width - paddingX2) / encounterMap.width,
+      (this.#canvas.height - paddingX2) / encounterMap.height
+    );
     const horizontalLineLength = cellSize * encounterMap.width;
     const verticalLineLength = cellSize * encounterMap.height;
+    const horizontalPadding = (this.#canvas.width - horizontalLineLength) / 2;
+    const verticalPadding = (this.#canvas.height - verticalLineLength) / 2;
 
     ctx.lineWidth = lineWidth;
     ctx.strokeStyle = LINE_COLOR;
 
-    for (let i = 1; i < encounterMap.width; i++) {
+    for (let i = 0; i <= encounterMap.width; i++) {
       const start = {
-        x: i * cellSize,
-        y: 0,
+        x: i * cellSize + horizontalPadding,
+        y: verticalPadding,
       };
       const end = {
-        x: i * cellSize,
-        y: verticalLineLength,
+        x: i * cellSize + horizontalPadding,
+        y: verticalLineLength + verticalPadding,
       };
 
       this.#drawLine(start, end);
     }
 
-    for (let i = 1; i < encounterMap.height; i++) {
+    for (let i = 0; i <= encounterMap.height; i++) {
       const start = {
-        x: 0,
-        y: i * cellSize,
+        x: horizontalPadding,
+        y: i * cellSize + verticalPadding,
       };
       const end = {
-        x: horizontalLineLength,
-        y: i * cellSize,
+        x: horizontalLineLength + horizontalPadding,
+        y: i * cellSize + verticalPadding,
       };
 
       this.#drawLine(start, end);
