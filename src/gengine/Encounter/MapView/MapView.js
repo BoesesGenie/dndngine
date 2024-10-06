@@ -1,17 +1,21 @@
 const LINE_WIDTH_DIVIDER = 800;
 const LINE_COLOR = '#FFF';
 const PADDING = 0.05;
-const MIN_SCALE = 0.125;
+const MIN_SCALE = 1;
 
 export class MapView {
   #canvas;
   #scale = 1;
+  #scaleCenterX = 0;
+  #scaleCenterY = 0;
 
   constructor(canvas) {
     this.#canvas = canvas;
   }
 
   draw(encounterMap, { scaleDelta, x, y }) {
+    this.#scaleCenterY = y || this.#scaleCenterY;
+    this.#scaleCenterX = x || this.#scaleCenterX;
     const ctx = this.#canvas.context;
     const lineWidth = Math.min(this.#canvas.width, this.#canvas.height) / LINE_WIDTH_DIVIDER;
     this.#scale += scaleDelta * -0.01;
@@ -35,8 +39,8 @@ export class MapView {
     ctx.lineWidth = lineWidth;
     ctx.strokeStyle = LINE_COLOR;
 
-    const xStart = (this.#canvas.width - width) / 2 + horizontalPadding;
-    const yStart = (this.#canvas.height - height) / 2 + verticalPadding;
+    const xStart = (this.#canvas.width - width) * this.#scaleCenterX / this.#canvas.width + horizontalPadding;
+    const yStart = (this.#canvas.height - height) * this.#scaleCenterY / this.#canvas.height + verticalPadding;
 
     for (let i = 0; i <= encounterMap.width; i++) {
       const start = {

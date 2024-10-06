@@ -22,6 +22,6 @@ export class Encounter {
     this.#canvas.context.fillStyle = 'black';
     this.#canvas.context.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
 
-    this.#mapView.draw(new EncounterMap(120, 120).drawDto, settings);
+    this.#mapView.draw(new EncounterMap(20, 20).drawDto, settings);
   }
 }
