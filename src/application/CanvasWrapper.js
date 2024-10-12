@@ -1,5 +1,5 @@
 import { eventEmitter } from './EventEmitter.js';
-import {DRAG, SCALE, WINDOW_RESIZE} from './events.js';
+import {DRAG, DRAG_STOPPED, SCALE, WINDOW_RESIZE} from './events.js';
 
 export class CanvasWrapper {
   #canvas = document.createElement('canvas');
@@ -7,6 +7,7 @@ export class CanvasWrapper {
   #isMouseDown = false;
   #dragXStart;
   #dragYStart;
+  #dragStarted = false;
 
   constructor(rootNode) {
     this.#rootNode = rootNode;
@@ -70,6 +71,12 @@ export class CanvasWrapper {
     e.preventDefault();
 
     this.#isMouseDown = false;
+
+    if (this.#dragStarted) {
+      this.#dragStarted = false;
+
+      eventEmitter.emit(DRAG_STOPPED);
+    }
   }
 
   #handleMouseMove(e) {
@@ -77,6 +84,10 @@ export class CanvasWrapper {
 
     if (!this.#isMouseDown) {
       return;
+    }
+
+    if (!this.#dragStarted) {
+      this.#dragStarted = true;
     }
 
     eventEmitter.emit(DRAG, {

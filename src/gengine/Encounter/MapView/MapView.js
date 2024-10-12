@@ -10,6 +10,8 @@ export class MapView {
   #scaleCenterY = 0;
   #dragDeltaX = 0;
   #dragDeltaY = 0;
+  #dragBaseDeltaX = 0;
+  #dragBaseDeltaY = 0;
 
   constructor(canvas) {
     this.#canvas = canvas;
@@ -22,12 +24,13 @@ export class MapView {
   }
 
   drag({ deltaX, deltaY }) {
-    if (this.#scale === 1) {
-      return;
-    }
+    this.#dragDeltaX = this.#dragBaseDeltaX + deltaX;
+    this.#dragDeltaY = this.#dragBaseDeltaY + deltaY;
+  }
 
-    this.#dragDeltaX = deltaX;
-    this.#dragDeltaY = deltaY;
+  dragStopped() {
+    this.#dragBaseDeltaX = this.#dragDeltaX;
+    this.#dragBaseDeltaY = this.#dragDeltaY;
   }
 
   draw(encounterMap) {

@@ -1,6 +1,6 @@
 import { EncounterMap } from '../../domain/EncounterMap/EncounterMap.js';
 import { eventEmitter } from '../../application/EventEmitter.js';
-import {DRAG, SCALE, WINDOW_RESIZE} from '../../application/events.js';
+import {DRAG, DRAG_STOPPED, SCALE, WINDOW_RESIZE} from '../../application/events.js';
 
 export class Encounter {
   #canvas;
@@ -18,6 +18,7 @@ export class Encounter {
     eventEmitter.on(WINDOW_RESIZE, this.#draw.bind(this));
     eventEmitter.on(SCALE, this.#scaleMap.bind(this));
     eventEmitter.on(DRAG, this.#dragMap.bind(this));
+    eventEmitter.on(DRAG_STOPPED, this.#dragMapStop.bind(this));
   }
 
   #scaleMap(settings) {
@@ -28,6 +29,10 @@ export class Encounter {
   #dragMap(settings) {
     this.#mapView.drag(settings);
     this.#draw();
+  }
+
+  #dragMapStop() {
+    this.#mapView.dragStopped();
   }
 
   #draw() {
