@@ -1,9 +1,12 @@
 import { eventEmitter } from './EventEmitter.js';
-import { SCALE, WINDOW_RESIZE } from './events.js';
+import {DRAG, SCALE, WINDOW_RESIZE} from './events.js';
 
 export class CanvasWrapper {
   #canvas = document.createElement('canvas');
   #rootNode;
+  #isMouseDown = false;
+  #dragXStart;
+  #dragYStart;
 
   constructor(rootNode) {
     this.#rootNode = rootNode;
@@ -15,6 +18,9 @@ export class CanvasWrapper {
 
     window.addEventListener('resize', this.#handleWindowResize.bind(this));
     this.#canvas.addEventListener('wheel', this.#handleScale.bind(this));
+    this.#canvas.addEventListener('mousedown', this.#handleMouseDown.bind(this));
+    this.#canvas.addEventListener('mouseup', this.#handleMouseUp.bind(this));
+    this.#canvas.addEventListener('mousemove', this.#handleMouseMove.bind(this));
 
     this.#rootNode.appendChild(this.#canvas);
   }
@@ -49,6 +55,33 @@ export class CanvasWrapper {
       scaleDelta: e.deltaY,
       x: e.clientX,
       y: e.clientY,
+    });
+  }
+
+  #handleMouseDown(e) {
+    e.preventDefault();
+
+    this.#isMouseDown = true;
+    this.#dragXStart = e.clientX;
+    this.#dragYStart = e.clientY;
+  }
+
+  #handleMouseUp(e) {
+    e.preventDefault();
+
+    this.#isMouseDown = false;
+  }
+
+  #handleMouseMove(e) {
+    e.preventDefault();
+
+    if (!this.#isMouseDown) {
+      return;
+    }
+
+    eventEmitter.emit(DRAG, {
+      deltaX: e.clientX - this.#dragXStart,
+      deltaY: e.clientY - this.#dragYStart,
     });
   }
 }

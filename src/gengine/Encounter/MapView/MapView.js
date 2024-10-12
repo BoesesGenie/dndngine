@@ -8,17 +8,32 @@ export class MapView {
   #scale = 1;
   #scaleCenterX = 0;
   #scaleCenterY = 0;
+  #dragDeltaX = 0;
+  #dragDeltaY = 0;
 
   constructor(canvas) {
     this.#canvas = canvas;
   }
 
-  draw(encounterMap, { scaleDelta, x, y }) {
+  scale({ scaleDelta, x, y }) {
     this.#scaleCenterY = this.#scaleCenterY ? this.#scale === 1 ? 0 : this.#scaleCenterY : y;
     this.#scaleCenterX = this.#scaleCenterX ? this.#scale === 1 ? 0 : this.#scaleCenterX : x;
+    this.#scale += scaleDelta * -0.01;
+  }
+
+  drag({ deltaX, deltaY }) {
+    if (this.#scale === 1) {
+      return;
+    }
+
+    this.#dragDeltaX = deltaX;
+    this.#dragDeltaY = deltaY;
+  }
+
+  draw(encounterMap) {
     const ctx = this.#canvas.context;
     const lineWidth = Math.min(this.#canvas.width, this.#canvas.height) / LINE_WIDTH_DIVIDER;
-    this.#scale += scaleDelta * -0.01;
+
     this.#scale = Math.min(
       Math.max(MIN_SCALE, this.#scale),
       Math.max(encounterMap.width, encounterMap.height)
@@ -39,8 +54,16 @@ export class MapView {
     ctx.lineWidth = lineWidth;
     ctx.strokeStyle = LINE_COLOR;
 
-    const xStart = (this.#canvas.width - width) * this.#scaleCenterX / this.#canvas.width + horizontalPadding;
-    const yStart = (this.#canvas.height - height) * this.#scaleCenterY / this.#canvas.height + verticalPadding;
+    const xStart = (this.#canvas.width - width)
+      * this.#scaleCenterX
+      / this.#canvas.width
+      + horizontalPadding
+      + this.#dragDeltaX;
+    const yStart = (this.#canvas.height - height)
+      * this.#scaleCenterY
+      / this.#canvas.height
+      + verticalPadding
+      + this.#dragDeltaY;
 
     for (let i = 0; i <= encounterMap.width; i++) {
       const start = {
